@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = __importDefault(require("express"));
+var morgan_1 = __importDefault(require("morgan"));
+var helmet_1 = __importDefault(require("helmet"));
+var cors_1 = __importDefault(require("cors"));
+require('dotenv').config();
+var middlewares_1 = require("./middlewares");
+var api_1 = __importDefault(require("./api"));
+var app = express_1.default();
+app.use(morgan_1.default('dev'));
+app.use(helmet_1.default());
+app.use(cors_1.default());
+app.use(express_1.default.json());
+app.use('/', api_1.default);
+app.use(middlewares_1.notFound);
+app.use(middlewares_1.errorHandler);
+module.exports = app;

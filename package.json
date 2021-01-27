@@ -1,0 +1,29 @@
+{
+  "name": "rule-validation-api",
+  "version": "1.0.0",
+  "description": "A simple rule-validation API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gbolu/rule-validation.git"
+  },
+  "keywords": [
+    "rule",
+    "validation"
+  ],
+  "author": "Gbolu Adeyemi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gbolu/rule-validation/issues"
+  },
+  "homepage": "https://github.com/gbolu/rule-validation#readme",
+  "devDependencies": {
+    "@types/yup": "^0.29.11"
+  }
+}
