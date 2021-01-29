@@ -6,6 +6,12 @@ A simple rule validation API
 npm install
 ```
 
+## Start 
+
+```
+npm run start
+```
+
 ## Development
 
 ```
