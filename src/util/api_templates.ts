@@ -1,4 +1,6 @@
-class JSENDTemplate {
+import { IDataValidate } from "./types";
+
+export class JSENDTemplate {
     message: string | undefined;
     status: string | undefined;
     data: string | Object | undefined | null;
@@ -10,7 +12,7 @@ class JSENDTemplate {
     }
 }
 
-class ValidationTemplate {
+export class ValidationTemplate {
     error: boolean;
     field: string;
     field_value: string | number;
@@ -25,31 +27,9 @@ class ValidationTemplate {
     }
 
 }
-
-class ValidatedDataTemplate {
+export class ValidatedDataTemplate {
     validation: IDataValidate;
     constructor(){
         this.validation = new ValidationTemplate();
     }
-}
-
-interface IDataValidate {
-  error: boolean;
-  field: string;
-  field_value: string | number;
-  condition: "eq" | "neq" | "gt" | "gte" | "contains";
-  condition_value: string | number;
-}
-
-interface IValidateRule {
-    "rule": {
-        "field": string,
-        "condition": "eq" | "neq" | "gt" | "gte" | "contains",
-        "condition_value": string | number
-    },
-    "data": string | object | Array<string | number>
-}
-
-export {
-    JSENDTemplate, IValidateRule, IDataValidate, ValidatedDataTemplate
 }

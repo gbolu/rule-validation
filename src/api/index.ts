@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
-import {IValidateRule, JSENDTemplate} from '../util/api_templates'
-import { isDataVerified, isValidData, isValidEndpoint, isValidRule } from '../util/validate';
+import {JSENDTemplate, ValidationTemplate} from '../util/api_templates'
+import { IValidateRule } from '../util/types';
+import { isDataVerified, isValidData, isValidEndpoint, isValidRule, performValidate } from '../util/validate';
 const router = express.Router();
 
 router.get('/', (_req, res) => {
@@ -29,15 +30,33 @@ router.post(
       await isValidRule(jsonReq["rule"]);
       await isValidData(jsonReq["data"]);
       await isDataVerified(jsonReq["data"], jsonReq["rule"]["field"]);
-
-      
     } catch (error) {
       response.message = error;
       response.status = "error";
       response.data = null;
       return res.status(400).json(response);
     }
-    return res.status(200).json(response);
+
+    let validatedData = new ValidationTemplate();
+    let rule = jsonReq["rule"];
+    let data = jsonReq["data"]
+    validatedData.condition = rule.condition;
+    validatedData.condition_value = rule.condition_value;
+    validatedData.field = rule.field;
+    validatedData.field_value = data[rule.field];
+    try {
+      await performValidate(rule.condition, rule.field, rule.condition_value, data);
+      response.message = `field ${rule.field} successfully validated.`;
+      response.status = "success";
+      response.data = {"validation": validatedData};
+      return res.status(200).json(response);
+    } catch (error) {
+      response.message = `field ${rule.field} failed validation.`;
+      response.status = "error"
+      validatedData.error = true;
+      response.data = {"validation": validatedData}
+      return res.status(400).json(response);
+    }
   }
 );
 

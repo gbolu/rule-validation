@@ -1,4 +1,4 @@
-import { JSENDTemplate, ValidatedDataTemplate } from "./api_templates";
+// import { JSENDTemplate, ValidatedDataTemplate } from "./api_templates";
 
 const isValidEndpoint = (o: Object, mustHaveProps: Array<string>) => {
   return new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ const isValidRule = (o: any | Object) => {
     });
 }
 
-const isValidData = (o: Object | string | Array<string | number>) => {
+const isValidData = (o: Object | string | Array<string|number>) => {
   return new Promise((resolve, reject) => {
     const validDataTypes = ["string", "object"];
     if (!validDataTypes.includes(typeof o)) 
@@ -49,22 +49,58 @@ const isValidData = (o: Object | string | Array<string | number>) => {
   })
 }
 
-const isDataVerified = (data: Object | string, field: string) => {
+const isDataVerified = (data: Object | string | Array<string|number>, field: string | any) => {
   return new Promise((resolve, reject) => {
+    let rejectionMsg = `field ${field} is missing from data`;
+    if (Array.isArray(data)) {
+      if(data[field] === undefined){
+        reject(rejectionMsg)
+      }
+    }
+
     if(typeof(data) === 'string')
     {
-      if(data !== field)
+      if (isNaN(parseInt(field))) 
       {
-        reject(`field ${field} is missing from data.`)
+        reject(rejectionMsg)
       }
     } 
 
     if(!data.hasOwnProperty(field)){
-      reject(`field ${field} is missing from data.`);
+      reject(rejectionMsg);
     }
 
     resolve(true);
   })
 }
 
-export { isValidEndpoint, isValidRule, isValidData, isDataVerified };
+const performValidate = (condition: string, field: string, condition_value: string | number, data: string | Object | Array<any>): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    let dataValue = data[field];
+    switch(condition)
+    {
+      case "gte":
+        dataValue >= condition_value ? resolve(true) : reject(false);
+        break;
+      case "eq":
+        dataValue === condition_value ? resolve(true) : reject(false);
+        break;
+      case "neq":
+        dataValue !== condition_value ? resolve(true) : reject(false);
+        break;
+      case "gt":
+        dataValue > condition_value ? resolve(true) : reject(false);
+        break;
+      case "contains":
+        if(Array.isArray(data)){
+          if(dataValue.includes(condition_value)){
+            resolve(true)
+          }
+        }
+        reject(false)
+        break;
+    }
+  })
+}
+
+export { isValidEndpoint, isValidRule, isValidData, isDataVerified, performValidate };
