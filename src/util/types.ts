@@ -14,3 +14,9 @@ export interface IValidateRule {
   };
   data: string | object | Array<string | number>;
 }
+
+export interface JSENDTemplate {
+  message: string | undefined;
+  status: string | undefined;
+  data: string | Object | undefined | null;
+}
